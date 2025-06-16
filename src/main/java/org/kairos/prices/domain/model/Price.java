@@ -1,11 +1,13 @@
 package org.kairos.prices.domain.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class Price {
 
     private Long brandId;
