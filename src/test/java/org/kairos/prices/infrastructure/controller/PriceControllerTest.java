@@ -1,13 +1,17 @@
 package org.kairos.prices.infrastructure.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.kairos.prices.exception.domain.exception.MissingParameterException;
+import org.kairos.prices.exception.domain.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -34,6 +38,7 @@ class PriceControllerTest {
                         .param("applicationDate", "2020-06-14T10:00:00"))
                 .andExpect(jsonPath("$.priceList").value(1))
                 .andExpect(jsonPath("$.price").value(35.50))
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -51,6 +56,7 @@ class PriceControllerTest {
                         .param("applicationDate", "2020-06-14T16:00:00"))
                 .andExpect(jsonPath("$.priceList").value(2))
                 .andExpect(jsonPath("$.price").value(25.45))
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -68,6 +74,7 @@ class PriceControllerTest {
                         .param("applicationDate", "2020-06-14T21:00:00"))
                 .andExpect(jsonPath("$.priceList").value(1))
                 .andExpect(jsonPath("$.price").value(35.50))
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -85,6 +92,7 @@ class PriceControllerTest {
                         .param("applicationDate", "2020-06-15T10:00:00"))
                 .andExpect(jsonPath("$.priceList").value(3))
                 .andExpect(jsonPath("$.price").value(30.50))
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -102,11 +110,57 @@ class PriceControllerTest {
                         .param("applicationDate", "2020-06-16T21:00:00"))
                 .andExpect(jsonPath("$.priceList").value(4))
                 .andExpect(jsonPath("$.price").value(38.95))
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
         log.info(TEST_5);
         log.info("Test 5 - result: {}", result);
+    }
+
+    @Test
+    @DisplayName("Throws MissingParameterException when applicationDate is missing")
+    void throwsExceptionWhenApplicationDateIsMissing() throws Exception {
+        mockMvc.perform(get("/prices")
+                        .param("productId", "35455")
+                        .param("brandId", "1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(MissingParameterException.class, result.getResolvedException()))
+                .andExpect(result -> assertEquals("Parameter missing: Application date", result.getResolvedException().getMessage()));
+    }
+
+    @Test
+    @DisplayName("Throws MissingParameterException when brandId is missing")
+    void throwsExceptionWhenBrandIdIsMissing() throws Exception {
+        mockMvc.perform(get("/prices")
+                        .param("productId", "35455")
+                        .param("applicationDate", "2020-06-14T10:00:00"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(MissingParameterException.class, result.getResolvedException()))
+                .andExpect(result -> assertEquals("Parameter missing: Brand ID", result.getResolvedException().getMessage()));
+    }
+
+    @Test
+    @DisplayName("Throws MissingParameterException when productId is missing")
+    void throwsExceptionWhenProductIdIsMissing() throws Exception {
+        mockMvc.perform(get("/prices")
+                        .param("brandId", "1")
+                        .param("applicationDate", "2020-06-14T10:00:00"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(MissingParameterException.class, result.getResolvedException()))
+                .andExpect(result -> assertEquals("Parameter missing: Product ID", result.getResolvedException().getMessage()));
+    }
+
+    @Test
+    @DisplayName("Returns 404 when no applicable price is found")
+    void returnsNotFoundWhenNoApplicablePriceIsFound() throws Exception {
+        mockMvc.perform(get("/prices")
+                        .param("productId", "99999")
+                        .param("brandId", "1")
+                        .param("applicationDate", "2020-06-14T10:00:00"))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertInstanceOf(ResourceNotFoundException.class, result.getResolvedException()))
+                .andExpect(result -> assertEquals("Resource not found: No applicable price found for application date: 2020-06-14T10:00, product ID: 99999, brand ID: 1", result.getResolvedException().getMessage()));
     }
 }
