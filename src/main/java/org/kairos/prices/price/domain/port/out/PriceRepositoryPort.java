@@ -3,8 +3,8 @@ package org.kairos.prices.price.domain.port.out;
 import org.kairos.prices.price.domain.model.Price;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 
 public interface PriceRepositoryPort {
-    Optional<Price> findApplicablePrice(LocalDateTime applicationDate, Long productId, Long brandId);
+    List<Price> findApplicablePrices(LocalDateTime applicationDate, Long productId, Long brandId);
 }
