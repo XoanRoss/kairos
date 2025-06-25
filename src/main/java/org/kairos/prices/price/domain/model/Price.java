@@ -1,4 +1,4 @@
-package org.kairos.prices.domain.model;
+package org.kairos.prices.price.domain.model;
 
 import lombok.Builder;
 import lombok.Data;

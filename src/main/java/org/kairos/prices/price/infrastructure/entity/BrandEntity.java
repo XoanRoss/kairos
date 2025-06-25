@@ -1,4 +1,4 @@
-package org.kairos.prices.infrastructure.entity;
+package org.kairos.prices.price.infrastructure.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

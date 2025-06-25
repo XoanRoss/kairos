@@ -1,10 +1,10 @@
-package org.kairos.prices.infrastructure.repository;
+package org.kairos.prices.price.infrastructure.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.kairos.prices.domain.model.Price;
-import org.kairos.prices.domain.port.out.PriceRepositoryPort;
-import org.kairos.prices.infrastructure.entity.PriceEntity;
-import org.kairos.prices.infrastructure.mapper.PriceMapper;
+import org.kairos.prices.price.domain.model.Price;
+import org.kairos.prices.price.domain.port.out.PriceRepositoryPort;
+import org.kairos.prices.price.infrastructure.entity.PriceEntity;
+import org.kairos.prices.price.infrastructure.mapper.PriceMapper;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
-package org.kairos.prices.infrastructure.repository;
+package org.kairos.prices.price.infrastructure.repository;
 
-import org.kairos.prices.infrastructure.entity.PriceEntity;
+import org.kairos.prices.price.infrastructure.entity.PriceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

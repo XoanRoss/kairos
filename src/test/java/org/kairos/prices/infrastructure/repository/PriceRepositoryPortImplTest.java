@@ -2,9 +2,11 @@ package org.kairos.prices.infrastructure.repository;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kairos.prices.domain.model.Price;
-import org.kairos.prices.infrastructure.entity.PriceEntity;
-import org.kairos.prices.infrastructure.mapper.PriceMapper;
+import org.kairos.prices.price.domain.model.Price;
+import org.kairos.prices.price.infrastructure.entity.PriceEntity;
+import org.kairos.prices.price.infrastructure.mapper.PriceMapper;
+import org.kairos.prices.price.infrastructure.repository.JpaPriceRepository;
+import org.kairos.prices.price.infrastructure.repository.PriceRepositoryPortImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;

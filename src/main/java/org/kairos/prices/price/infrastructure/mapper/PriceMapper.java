@@ -1,7 +1,7 @@
-package org.kairos.prices.infrastructure.mapper;
+package org.kairos.prices.price.infrastructure.mapper;
 
-import org.kairos.prices.domain.model.Price;
-import org.kairos.prices.infrastructure.entity.PriceEntity;
+import org.kairos.prices.price.domain.model.Price;
+import org.kairos.prices.price.infrastructure.entity.PriceEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
