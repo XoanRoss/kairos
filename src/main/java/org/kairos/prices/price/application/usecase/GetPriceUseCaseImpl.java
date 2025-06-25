@@ -15,6 +15,7 @@ public class GetPriceUseCaseImpl implements GetPriceUseCase {
 
     @Override
     public Price findApplicablePrice(LocalDateTime applicationDate, Long productId, Long brandId) {
-        return priceRepositoryPort.findApplicablePrice(applicationDate, productId, brandId).orElseThrow(() -> new ResourceNotFoundException("Price"));
+        return priceRepositoryPort.findApplicablePrice(applicationDate, productId, brandId)
+                .orElseThrow(() -> new ResourceNotFoundException("Price with application date: %s, product ID: %s, and brand ID: %s".formatted(applicationDate, productId, brandId)));
     }
 }
