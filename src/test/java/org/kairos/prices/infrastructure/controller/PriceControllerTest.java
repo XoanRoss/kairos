@@ -1,15 +1,15 @@
 package org.kairos.prices.infrastructure.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kairos.prices.exception.domain.exception.MissingParameterException;
 import org.kairos.prices.exception.domain.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -120,36 +120,78 @@ class PriceControllerTest {
     }
 
     @Test
-    @DisplayName("Throws MissingParameterException when applicationDate is missing")
+    @DisplayName("Throws MissingServletRequestParameterException when application date is missing")
     void throwsExceptionWhenApplicationDateIsMissing() throws Exception {
         mockMvc.perform(get("/prices")
                         .param("productId", "35455")
                         .param("brandId", "1"))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertInstanceOf(MissingParameterException.class, result.getResolvedException()))
-                .andExpect(result -> assertEquals("Parameter missing: Application date", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertInstanceOf(MissingServletRequestParameterException.class, result.getResolvedException()))
+                .andExpect(jsonPath("$.error").value("Parameter missing: applicationDate"))
+                .andExpect(jsonPath("$.path").value("/prices"));
     }
 
     @Test
-    @DisplayName("Throws MissingParameterException when brandId is missing")
+    @DisplayName("Throws MethodArgumentTypeMismatchException when application date is not valid")
+    void throwsExceptionWhenApplicationDateIsNotValid() throws Exception {
+        mockMvc.perform(get("/prices")
+                        .param("productId", "35455")
+                        .param("brandId", "1")
+                        .param("applicationDate", "a"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(MethodArgumentTypeMismatchException.class, result.getResolvedException()))
+                .andExpect(jsonPath("$.error").value("Parameter not valid: applicationDate"))
+                .andExpect(jsonPath("$.path").value("/prices"));
+    }
+
+    @Test
+    @DisplayName("Throws MissingServletRequestParameterException when brand ID is missing")
     void throwsExceptionWhenBrandIdIsMissing() throws Exception {
         mockMvc.perform(get("/prices")
                         .param("productId", "35455")
                         .param("applicationDate", "2020-06-14T10:00:00"))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertInstanceOf(MissingParameterException.class, result.getResolvedException()))
-                .andExpect(result -> assertEquals("Parameter missing: Brand ID", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertInstanceOf(MissingServletRequestParameterException.class, result.getResolvedException()))
+                .andExpect(jsonPath("$.error").value("Parameter missing: brandId"))
+                .andExpect(jsonPath("$.path").value("/prices"));
     }
 
     @Test
-    @DisplayName("Throws MissingParameterException when productId is missing")
+    @DisplayName("Throws MethodArgumentTypeMismatchException when brand ID is not valid")
+    void throwsExceptionWhenBrandIdIsNotValid() throws Exception {
+        mockMvc.perform(get("/prices")
+                        .param("productId", "35455")
+                        .param("brandId", "a")
+                        .param("applicationDate", "2020-06-14T10:00:00"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(MethodArgumentTypeMismatchException.class, result.getResolvedException()))
+                .andExpect(jsonPath("$.error").value("Parameter not valid: brandId"))
+                .andExpect(jsonPath("$.path").value("/prices"));
+    }
+
+    @Test
+    @DisplayName("Throws MissingServletRequestParameterException when product ID is missing")
     void throwsExceptionWhenProductIdIsMissing() throws Exception {
         mockMvc.perform(get("/prices")
                         .param("brandId", "1")
                         .param("applicationDate", "2020-06-14T10:00:00"))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertInstanceOf(MissingParameterException.class, result.getResolvedException()))
-                .andExpect(result -> assertEquals("Parameter missing: Product ID", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertInstanceOf(MissingServletRequestParameterException.class, result.getResolvedException()))
+                .andExpect(jsonPath("$.error").value("Parameter missing: productId"))
+                .andExpect(jsonPath("$.path").value("/prices"));
+    }
+
+    @Test
+    @DisplayName("Throws MethodArgumentTypeMismatchException when product ID is not valid")
+    void throwsExceptionWhenProductIdIsNotValid() throws Exception {
+        mockMvc.perform(get("/prices")
+                        .param("productId", "a")
+                        .param("brandId", "1")
+                        .param("applicationDate", "2020-06-14T10:00:00"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(MethodArgumentTypeMismatchException.class, result.getResolvedException()))
+                .andExpect(jsonPath("$.error").value("Parameter not valid: productId"))
+                .andExpect(jsonPath("$.path").value("/prices"));
     }
 
     @Test
